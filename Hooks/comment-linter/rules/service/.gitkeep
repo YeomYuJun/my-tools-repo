@@ -1,0 +1,22 @@
+# 서비스별 정적 룰 슬롯
+#
+# 파일 추가 방식:
+#   .claude/hooks/comment-linter/rules/service/{서비스ID}.js
+#
+# 서비스 ID는 config/services.json 의 `id` 필드와 일치해야 함.
+# 예: be-admin.js, be-portal.js, fe-admin.js, fe-portal.js
+#
+# 파일 포맷:
+#   module.exports = [
+#     {
+#       id: 'admin-no-author',
+#       severity: 'block',
+#       check(snippet, ctx) {
+#         return /@author\s+/i.test(snippet)
+#           ? { ruleId: 'admin-no-author', severity: 'block', message: '@author 태그 금지' }
+#           : null;
+#       },
+#     },
+#   ];
+#
+# 룰 인터페이스: { id, severity: 'block'|'advisory', check(snippet, ctx) => violation | null }

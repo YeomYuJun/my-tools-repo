@@ -1,0 +1,10 @@
+{
+  "_comment": "Layer definitions for convention-enforcer. Maps a layer name to the paths that belong to it (glob). detect.js matches an edited file's path against these to pick its layer. Stable/hand-edited - separate from the generated rule sets (draft.json / enforced.json). Seeded for a typical layered Spring BE package structure.",
+  "controller": { "pathGlobs": ["**/controller/**/*.java"] },
+  "service":    { "pathGlobs": ["**/service/**/*.java"] },
+  "mapper":     { "pathGlobs": ["**/mapper/**/*.java"] },
+  "converter":  { "pathGlobs": ["**/converter/**/*.java"] },
+  "dto":        { "pathGlobs": ["**/domain/dto/**/*.java"] },
+  "entity":     { "pathGlobs": ["**/domain/entity/**/*.java"] },
+  "mapperXml":  { "pathGlobs": ["**/resources/mapper/**/*.xml"] }
+}

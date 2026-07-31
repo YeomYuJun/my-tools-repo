@@ -1,0 +1,20 @@
+{
+  "_comment": "comment-linter 서비스/언어 매핑. prefix는 normalized path(forward slash)에 대해 includes() 매칭.",
+  "applyWithoutService": true,
+  "extensionToLanguage": {
+    ".java": "java",
+    ".vue": "vue",
+    ".js": "js",
+    ".ts": "js",
+    ".mjs": "js",
+    ".cjs": "js",
+    ".jsx": "js",
+    ".tsx": "js"
+  },
+  "services": [
+    { "id": "be-admin",    "prefix": "example-be/admin-service/",  "defaultLanguage": "java" },
+    { "id": "be-portal",   "prefix": "example-be/portal-service/", "defaultLanguage": "java" },
+    { "id": "fe-admin",    "prefix": "example-fe/apps/admin/",     "defaultLanguage": "vue" },
+    { "id": "fe-packages", "prefix": "example-fe/packages/",       "defaultLanguage": "js" }
+  ]
+}

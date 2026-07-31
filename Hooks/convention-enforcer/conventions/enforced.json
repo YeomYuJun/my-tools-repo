@@ -1,0 +1,3 @@
+{
+  "_comment": "Human-PROMOTED convention rules, keyed by layer. ONLY these block (exit 2). Start empty: nothing is enforced until a human reviews draft.json and copies a rule here. Never let the generator write to this file. Rule shape: { id, checker:'regex'|'structural', pattern, flags, mustMatch, severity, message, source:'promoted' }."
+}

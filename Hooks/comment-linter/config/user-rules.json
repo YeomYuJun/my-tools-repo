@@ -1,0 +1,23 @@
+{
+  "_comment": "사용자 정의 정규식 룰. rules 배열에 객체를 추가하면 즉시 적용됨. 재시작 불필요.",
+  "_schema": {
+    "id":       "string  — 룰 식별자 (영문, 하이픈)",
+    "pattern":  "string  — JS 정규식 본문 (백슬래시는 JSON 이스케이프)",
+    "flags":    "string  — 정규식 플래그 (예: 'i', 'gi'). 생략 가능",
+    "message":  "string  — 위반 시 표시 메시지",
+    "severity": "'block' | 'advisory'  — block은 차단, advisory는 메인 Claude에게 위반 후보로 전달",
+    "appliesTo": {
+      "services":  "string[]  — 적용 서비스 ID 또는 ['*']. 생략 시 전체",
+      "languages": "string[]  — 적용 언어 또는 ['*']. 생략 시 전체"
+    }
+  },
+  "_example": {
+    "id": "no-author-tag",
+    "pattern": "@author\\s+",
+    "flags": "i",
+    "message": "@author 태그 금지 — git blame으로 대체",
+    "severity": "block",
+    "appliesTo": { "services": ["*"], "languages": ["java"] }
+  },
+  "rules": []
+}

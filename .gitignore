@@ -1,0 +1,16 @@
+# runtime artifacts
+.state/
+Hooks/drift-anchor/probe/out/
+
+# node
+node_modules/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editors
+.vscode/
+.idea/

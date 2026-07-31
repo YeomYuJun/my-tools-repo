@@ -1,0 +1,3 @@
+{
+  "_comment": "Generated DESCRIPTIVE convention rules, keyed by layer. Written by the convention-generator Skill from a codebase scan. Advisory only - these NEVER block, regardless of any severity field. A human promotes chosen rules into enforced.json. Each rule carries confidence + evidence so a human can judge."
+}
