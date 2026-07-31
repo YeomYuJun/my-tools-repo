@@ -34,6 +34,9 @@
 │   │   ├── state.js
 │   │   └── README.md
 │   └── test-hooks.js
+├── Scheduled/
+│   └── claude-code-changelog-daily/
+│       └── SKILL.md
 └── Skills/
     ├── convention-generator/
     │   └── SKILL.md
