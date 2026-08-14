@@ -1,6 +1,6 @@
 # state-injector
 
-Claude Code SessionStart + UserPromptSubmit hook. 사용자가 세션에 고정한 상태를 매 세션·매 턴 `additionalContext`로 되먹여 **system prompt처럼 상시 유지**한다.
+Claude Code SessionStart + UserPromptSubmit hook. 사용자가 세션에 고정한 상태를 매 세션·매 턴 `additionalContext`로 되먹여 **system prompt처럼 상시 유지**한다. co-dev-resume(상태 복원 스킬)의 hook 승격판.
 
 ## 핵심 분업
 
@@ -16,9 +16,21 @@ Skill 단독으론 "매 턴 자동"이 안 된다. 그 상시성은 hook의 `add
 SessionStart / UserPromptSubmit -> inject.js
   |- 상태 비어있음 -> exit 0 (조용)
   |- 있음 -> { hookSpecificOutput: { hookEventName, additionalContext: "[session-state]\n- key: value..." } }
+       + SessionStart 한정 -> systemMessage: "[session-state] N건 주입 중\n  key: value..."
 ```
 
 - 상태는 작게 설계 -> full 블록을 매 턴 주입. 커지면 `store.digest()` + `lastInjectedHash` 게이트로 전환(아래).
+
+### 두 채널이 향하는 곳이 다르다
+
+| 필드 | 사용자에게 보임 | 모델에게 보임 |
+|---|---|---|
+| `hookSpecificOutput.additionalContext` | X | O |
+| `systemMessage` | O | X |
+
+`additionalContext`는 system reminder로 감싸여 모델 컨텍스트에만 들어가고 화면엔 안 뜬다. 그래서 상태가 잘 주입되고 있어도 **사용자는 지금 뭐가 자기 세션을 조종하는지 알 수 없다.** `systemMessage`는 정반대(화면에만 뜨고 모델은 못 봄)라, 둘을 같은 JSON에 함께 실어 사람·모델 양쪽을 커버한다. systemMessage는 모델 컨텍스트로 안 가므로 **추가 토큰 비용 0**.
+
+매 턴 띄우면 노이즈라 사용자 가시 출력은 SessionStart에서만 나간다. 세션 중간 확인은 `state.js show`.
 
 ## CLI (state.js)
 
@@ -31,6 +43,8 @@ node <설치경로>/state-injector/state.js show
 node <설치경로>/state-injector/state.js clear focus
 node <설치경로>/state-injector/state.js clear
 ```
+
+`set`/`clear`는 변경 확인 한 줄에 이어 **전체 현황**을 재출력한다(별도 `show` 불요). 세션 시작 표시와 같은 렌더러(`store.userSummary`)를 써서 두 화면이 어긋나지 않는다. 변경 한 줄만으로는 방금 친 것만 확인될 뿐, 조용히 남아 계속 주입되는 낡은 항목은 안 드러나기 때문.
 
 ## 상태 스키마 (`.state/session-state.json`)
 
@@ -88,10 +102,10 @@ cp -r Skills/state <대상프로젝트>/.claude/skills/
 
 | 파일 | 책임 |
 |---|---|
-| `inject.js` | SessionStart/UserPromptSubmit hook, additionalContext 주입 |
-| `lib/store.js` | 상태 read/write/upsert/remove + digest/hash (cwd 기반) |
-| `state.js` | CLI: set/show/clear |
-| (`Skills/state/SKILL.md`) | /state 슬래시 UX |
+| `inject.js` | SessionStart/UserPromptSubmit hook, additionalContext 주입 + SessionStart 사용자 가시 출력 |
+| `lib/store.js` | 상태 read/write/upsert/remove + 렌더러(fullContext/userSummary/digest) + hash (cwd 기반) |
+| `state.js` | CLI: set/show/clear (변경 시 전체 현황 재출력) |
+| (`Skills/state/SKILL.md`) | /state 슬래시 UX + 출력 릴레이 의무 |
 
 ## 트러블슈팅
 

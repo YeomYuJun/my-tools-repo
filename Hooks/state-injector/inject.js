@@ -8,6 +8,10 @@
 //
 // State is kept small by design, so the full block is injected every turn. For
 // large state, switch to store.digest() + the lastInjectedHash gate (see README).
+//
+// additionalContext is invisible to the user, so at SessionStart the same state
+// also goes out as systemMessage - the one hook field that renders in the
+// terminal. Otherwise the human never learns what is steering the model.
 
 const fs = require('fs');
 const store = require('./lib/store');
@@ -20,12 +24,12 @@ function readStdin() {
   }
 }
 
-function emit(eventName, context) {
-  process.stdout.write(
-    JSON.stringify({
-      hookSpecificOutput: { hookEventName: eventName, additionalContext: context },
-    })
-  );
+function emit(eventName, context, userMessage) {
+  const out = {
+    hookSpecificOutput: { hookEventName: eventName, additionalContext: context },
+  };
+  if (userMessage) out.systemMessage = userMessage;
+  process.stdout.write(JSON.stringify(out));
 }
 
 function main() {
@@ -45,7 +49,10 @@ function main() {
   const context = store.fullContext(state);
   if (!context) process.exit(0); // no state -> stay silent
 
-  emit(eventName, context);
+  // Per turn it would be noise, so the user-visible copy is session start only.
+  const userMessage = eventName === 'SessionStart' ? store.userSummary(state) : null;
+
+  emit(eventName, context, userMessage);
   process.exit(0);
 }
 
